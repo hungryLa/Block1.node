@@ -1,5 +1,3 @@
-const authMiddleware = require('../middleware/auth');
-
 async function todoRoutes(fastify, options) {
     const {
         getTodos,
@@ -8,12 +6,11 @@ async function todoRoutes(fastify, options) {
         deleteTodo,
     } = require('../controllers/todoController');
 
-    fastify.addHook('preHandler', authMiddleware);
 
-    fastify.get('/todos', getTodos);
-    fastify.post('/todos', createTodo);
-    fastify.patch('/todos/:id', updateTodoStatus);
-    fastify.delete('/todos/:id', deleteTodo);
+    fastify.get('/todos', {preHandler: [fastify.authenticate] }, getTodos);
+    fastify.post('/todos', {preHandler: [fastify.authenticate] }, createTodo);
+    fastify.patch('/todos/:id', {preHandler: [fastify.authenticate] },  updateTodoStatus);
+    fastify.delete('/todos/:id', {preHandler: [fastify.authenticate] }, deleteTodo);
 }
 
 module.exports = todoRoutes;

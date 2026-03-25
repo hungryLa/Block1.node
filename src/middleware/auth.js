@@ -1,11 +1,12 @@
-async function authMiddleware(request, reply){
+const authenticate = async (request, reply) => {
     try {
-        await request
+        await request.jwtVerify();
     } catch (err) {
-        reply.status(401).send({
-            error: 'Unauthorized'
+        reply.code(401).send({
+            success: false,
+            message: 'Invalid or expired token'
         });
     }
-}
+};
 
-module.exports = authMiddleware()
+module.exports = { authenticate };
