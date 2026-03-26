@@ -13,40 +13,43 @@ describe('Todo Controller', () => {
     let testTodo;
 
     beforeAll(async () => {
-        await sequelize.sync({ force: true });
+        try {
+            await sequelize.sync({ force: true });
 
-        testUser = await User.create({
-            email: 'test1@example.com',
-            password: 'password123',
-            name: 'Test User'
-        });
+            testUser = await User.create({
+                email: 'test1@example.com',
+                password: 'password123',
+                name: 'Test User'
+            });
 
-        fastify = Fastify();
+            fastify = Fastify();
 
-        fastify.register(require('@fastify/jwt'), {
-            secret: 'test-secret-key'
-        });
+            fastify.register(require('@fastify/jwt'), {
+                secret: 'test-secret-key'
+            });
 
-        fastify.decorate('authenticate', async (request, reply) => {
-            try {
-                await request.jwtVerify();
-            } catch (err) {
-                reply.code(401).send({ error: 'Unauthorized' });
-            }
-        });
+            fastify.decorate('authenticate', async (request, reply) => {
+                try {
+                    await request.jwtVerify();
+                } catch (err) {
+                    reply.code(401).send({ error: 'Unauthorized' });
+                }
+            });
 
-        fastify.register(todoRoutes, { prefix: prefix });
+            fastify.register(todoRoutes, { prefix: prefix });
 
-        await fastify.ready();
+            await fastify.ready();
 
-        authToken = fastify.jwt.sign({
-            id: testUser.id,
-            email: testUser.email
-        });
+            authToken = fastify.jwt.sign({
+                id: testUser.id,
+                email: testUser.email
+            });
+        } catch (error) {
+            throw error;
+        }
     });
 
     afterAll(async () => {
-        // Закрываем сервер и подключение к БД
         await fastify.close();
         await sequelize.close();
     });
@@ -144,7 +147,6 @@ describe('Todo Controller', () => {
         expect(body.success).toBe(true);
         expect(body.message).toBe('Todo deleted successfully');
 
-        // Проверяем, что задача действительно удалена
         const deletedTodo = await Todo.findByPk(testTodo.id);
         expect(deletedTodo).toBeNull();
     });

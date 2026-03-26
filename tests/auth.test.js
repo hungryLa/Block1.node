@@ -3,7 +3,6 @@ const Fastify = require('fastify');
 const authRoutes = require('../src/routes/authRoutes');
 const { sequelize } = require('../src/config/database');
 const User = require('../src/models/User');
-const Todo = require('../src/models/Todo');
 const prefix = '/api/auth';
 describe('Auth Controller', () => {
     let fastify;
@@ -24,7 +23,6 @@ describe('Auth Controller', () => {
     });
 
     afterAll(async () => {
-        // Закрываем сервер и подключение к БД
         await fastify.close();
         await sequelize.close();
     });
