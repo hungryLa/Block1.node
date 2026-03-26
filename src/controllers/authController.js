@@ -1,6 +1,12 @@
 const User = require('../models/User')
-const {loginSchema, registerSchema} = require('../schemas/validation');
+const { loginSchema, registerSchema} = require('../schemas/validation');
 async function register(request, reply){
+    console.log(registerSchema)
+    if (!registerSchema || typeof registerSchema.validate !== 'function') {
+        return reply.status(500).send({
+            error: 'Validation schema not loaded properly'
+        });
+    }
     const {error, value} = registerSchema.validate(request.body);
     if (error) {
         return reply.status(400).send({ error: error.details[0].message });
@@ -15,10 +21,15 @@ async function register(request, reply){
         }
 
         const user = await User.create({ email, password });
-        return reply.status(201).send({ id: user.id, email: user.email });
+        const token = request.server.jwt.sign({ id: user.id, email: user.email });
+        return reply.status(201).send({
+            id: user.id,
+            email: user.email,
+            token: token,
+        });
     } catch (err) {
         request.log.error(err);
-        return reply.status(500).send({ error: 'Internal server error' });
+        return reply.status(500).send({ error: err });
     }
 }
 async function login(request, reply){

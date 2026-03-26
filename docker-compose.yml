@@ -1,12 +1,10 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: block1_postgres
-    restart: always
     environment:
-      POSTGRES_DB: block1_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     env_file:
       - .env
     ports:
@@ -16,24 +14,21 @@ services:
 
   app:
     build: .
-    container_name: block1_app
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: development
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: block1_db
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_POST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
     env_file:
       - .env
     depends_on:
       - postgres
-    volumes:
-      - .:/app
-      - /app/node_modules
 
 volumes:
   postgres_data:
+

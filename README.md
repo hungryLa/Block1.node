@@ -12,3 +12,11 @@
 - bcrypt
 - Joi (валидация)
 - Jest (тестирование)
+- Docker
+
+## Запуск
+
+git clone git@github.com:hungryLa/Block1.node.git
+cd block1.node
+
+docker-compose up -d

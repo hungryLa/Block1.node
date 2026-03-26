@@ -1,19 +1,11 @@
 const Joi = require('joi');
-const User = require('../models/User');
 const passwordReg = new RegExp('^[a-zA-Z0-9!@#$%^&*()_+-=]{8,30}$');
 
 const registerSchema = Joi.object({
     email: Joi.string()
         .required()
         .min(3)
-        .email()
-        .external(async (value, helpers) => {
-            const existing = await User.findOne({ where: { email: value } });
-            if (existing) {
-                throw new Error('Email already exists');
-            }
-            return value;
-        }),
+        .email(),
 
     password: Joi.string()
         .required()
@@ -41,8 +33,6 @@ const todoCreateSchema = Joi.object( {
         .required(),
     description: Joi.string()
         .allow(''),
-    user_id: Joi.number()
-        .required(),
     status: Joi.string()
         .valid('pending', 'in_progress', 'completed')
         .default('pending'),
@@ -53,3 +43,12 @@ const todoUpdateSchema = Joi.object({
         .valid('pending', 'in_progress', 'completed')
         .required(),
 });
+
+
+module.exports = {
+    registerSchema,
+    loginSchema,
+    todoIndexSchema,
+    todoCreateSchema,
+    todoUpdateSchema
+};

@@ -27,14 +27,22 @@ const Todo = sequelize.define('Todo', {
         type: DataTypes.ENUM('pending', 'in_progress', 'completed'),
         defaultValue: 'pending',
     }
+}, {
+    tableName: 'todos',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    freezeTableName: true
 })
 
 User.hasMany(Todo, {
     foreignKey: 'user_id',
+    as: 'todos'
 })
 
 Todo.belongsTo(User, {
     foreignKey: 'user_id',
+    as: 'user'
 })
 
 module.exports = Todo;

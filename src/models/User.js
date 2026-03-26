@@ -20,6 +20,12 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
     }
+}, {
+    tableName: 'users',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    freezeTableName: true
 })
 
 User.beforeCreate(async (user) => {

@@ -32,12 +32,8 @@ const start = async () => {
     try {
         // Инициализация базы данных
         await initDatabase();
-        console.log('✅ Database connection established');
-
         // Запуск сервера
         await fastify.listen({ port: PORT, host: '0.0.0.0' });
-        console.log(`🚀 Server running on port ${PORT}`);
-        console.log(`🔗 Health check: http://localhost:${PORT}/health`);
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);

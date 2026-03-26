@@ -7,10 +7,10 @@ async function todoRoutes(fastify, options) {
     } = require('../controllers/todoController');
 
 
-    fastify.get('/todos', {preHandler: [fastify.authenticate] }, getTodos);
-    fastify.post('/todos', {preHandler: [fastify.authenticate] }, createTodo);
-    fastify.patch('/todos/:id', {preHandler: [fastify.authenticate] },  updateTodoStatus);
-    fastify.delete('/todos/:id', {preHandler: [fastify.authenticate] }, deleteTodo);
+    fastify.get('/', {preHandler: [fastify.authenticate] }, getTodos);
+    fastify.post('/store', {preHandler: [fastify.authenticate] }, createTodo);
+    fastify.patch('/:id', {preHandler: [fastify.authenticate] },  updateTodoStatus);
+    fastify.delete('/:id', {preHandler: [fastify.authenticate] }, deleteTodo);
 }
 
 module.exports = todoRoutes;

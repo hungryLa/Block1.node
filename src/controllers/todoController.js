@@ -2,12 +2,16 @@ const Todo = require('../models/Todo');
 const { todoIndexSchema, todoCreateSchema, todoUpdateSchema } = require('../schemas/validation');
 
 async function getTodos(request, reply) {
-    const { error, value } = todoIndexSchema.validate(request.body);
+    const { error } = todoIndexSchema.validate(request.body);
     if (error) {
         return reply.status(400).send({ error: error.details[0].message });
     }
     try {
-        const todos = await Todo.findAll({ where: { userId: value.user.id } });
+        const todos = await Todo.findAll({
+            where: {
+                user_id: request.user.id
+            }
+        });
         return reply.send(todos);
     } catch (err) {
         request.log.error(err);
@@ -24,7 +28,7 @@ async function createTodo(request, reply) {
     try {
         const todo = await Todo.create({
             ...value,
-            userId: request.user.id,
+            user_id: request.user.id,
         });
         return reply.status(201).send(todo);
     } catch (err) {
@@ -41,7 +45,12 @@ async function updateTodoStatus(request, reply) {
     }
 
     try {
-        const todo = await Todo.findOne({ where: { id, userId: request.user.id } });
+        const todo = await Todo.findOne({
+            where: {
+                id: id,
+                user_id: request.user.id
+            }
+        });
         if (!todo) {
             return reply.status(404).send({ error: 'Todo not found' });
         }
@@ -57,12 +66,20 @@ async function updateTodoStatus(request, reply) {
 async function deleteTodo(request, reply) {
     const { id } = request.params;
     try {
-        const todo = await Todo.findOne({ where: { id, userId: request.user.id } });
+        const todo = await Todo.findOne({
+            where: {
+                id: id ,
+                user_id: request.user.id
+            }
+        });
         if (!todo) {
             return reply.status(404).send({ error: 'Todo not found' });
         }
         await todo.destroy();
-        return reply.status(204).send();
+        return reply.send({
+            success: true,
+            message: 'Todo deleted successfully'
+        });
     } catch (err) {
         request.log.error(err);
         return reply.status(500).send({ error: 'Internal server error' });
