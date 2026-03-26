@@ -16,7 +16,12 @@
 
 ## Запуск
 
-git clone git@github.com:hungryLa/Block1.node.git
-cd block1.node
+    git clone git@github.com:hungryLa/Block1.node.git
 
-docker-compose up -d
+    cd block1.node
+
+    cp .env.example .env
+
+    docker-compose build --no-cache
+
+    docker-compose up -d
