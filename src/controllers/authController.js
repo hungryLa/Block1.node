@@ -1,7 +1,6 @@
 const User = require('../models/User')
 const { loginSchema, registerSchema} = require('../schemas/validation');
 async function register(request, reply){
-    console.log(registerSchema)
     if (!registerSchema || typeof registerSchema.validate !== 'function') {
         return reply.status(500).send({
             error: 'Validation schema not loaded properly'
@@ -21,11 +20,9 @@ async function register(request, reply){
         }
 
         const user = await User.create({ email, password });
-        const token = request.server.jwt.sign({ id: user.id, email: user.email });
         return reply.status(201).send({
             id: user.id,
             email: user.email,
-            token: token,
         });
     } catch (err) {
         request.log.error(err);
