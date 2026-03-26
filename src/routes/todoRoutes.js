@@ -8,7 +8,7 @@ async function todoRoutes(fastify, options) {
 
 
     fastify.get('/', {preHandler: [fastify.authenticate] }, getTodos);
-    fastify.post('/store', {preHandler: [fastify.authenticate] }, createTodo);
+    fastify.post('/', {preHandler: [fastify.authenticate] }, createTodo);
     fastify.patch('/:id', {preHandler: [fastify.authenticate] },  updateTodoStatus);
     fastify.delete('/:id', {preHandler: [fastify.authenticate] }, deleteTodo);
 }
